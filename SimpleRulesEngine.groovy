@@ -1,5 +1,5 @@
 /**
- *  API Testing
+ *  Simple-Rules-Engine
  *
  *  Copyright 2015 Joe Craddock
  *
@@ -68,12 +68,11 @@ def initialize() {
     subscribe(motions, "motion", handler, [filterEvents: false])
     subscribe(illuminance, "illuminance", handler, [filterEvents: false])
     subscribe(contactSensors, "contact", handler, [filterEvents: false])
-    subscribe(thermostats, "temperature", handler, [filterEvents: false])
     
 }
 
 def allThings() {
-	def combined = (switches << dimmers << motions << locks << presence << temperature << humidity).flatten()
+	def combined = (switches << dimmers << motions << locks << presence << temperature << humidity << thermostats << illuminance << contactSensors).flatten()
 	
     return combined
 }
@@ -81,9 +80,9 @@ def allThings() {
 def handler(evt) {
 	log.trace "event happened $evt.description - $evt.value"
     
-    def url = "http://STApiTest.thesalthouse.co/EventHandler.ashx"
+    def url = "http://rulesengine.thesalthouse.co/EventHandler.ashx"
     
-    httpPostJson(uri: url, path: '', headers: ["Authorization": "Bearer ${atomicState.authToken}"],  body: [evt: [deviceId: evt.deviceId, name: evt.name, value: evt.value]]) {
+    httpPostJson(uri: url, path: '',  body: [evt: [deviceId: evt.deviceId, name: evt.name, value: evt.value]]) {
         log.debug "Event data successfully posted"
     }
 }
@@ -108,6 +107,9 @@ def getListOfThings() {
 	presence?.each{data << device(it,"presence")}
 	temperature?.each{data << device(it,"temperature")}
 	humidity?.each{data << device(it,"humidity")}
+	thermostats?.each{data << device(it,"thermostat")}
+	illuminance?.each{data << device(it,"illuminance")}
+	contactSensors?.each{data << device(it,"contact")}
 	
 	data
 }
