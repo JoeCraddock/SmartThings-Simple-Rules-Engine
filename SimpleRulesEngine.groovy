@@ -169,6 +169,22 @@ void command() {
                 
             }
         }
+        else if (type == "heatingsetpoint") 
+        {
+            device = thermostats?.find{it.id == id}
+            if (device) 
+            {
+                device.setHeatingSetpoint(value as int)                
+            }
+        }
+        else if (type == "coolingsetpoint") 
+        {
+            device = thermostats?.find{it.id == id}
+            if (device) 
+            {
+            	device.setCoolingSetpoint(value as int)
+            }
+        }
     }
 }
 
