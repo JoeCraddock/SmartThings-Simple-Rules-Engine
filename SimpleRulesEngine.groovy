@@ -42,6 +42,7 @@ preferences {
     input "motions", "capability.motionSensor", title: "Which Motion Sensors?", multiple: true, required: false
     input "contactSensors", "capability.contactSensor", title: "Which Contact Sensors?", multiple: true, required: false
   }
+  
 }
 
 def installed() {
@@ -116,8 +117,6 @@ def getListOfThings() {
 
 def getThingData() {
 
-	//allThings()
-
     def id = params.id
     def attribute = params.attribute
     
@@ -165,7 +164,7 @@ void command() {
             device = dimmers?.find{it.id == id}
             if (device) 
             {
-            	device.setLevel("$value")
+            	device.setLevel(value as int)
                 
             }
         }
@@ -185,9 +184,14 @@ void command() {
             	device.setCoolingSetpoint(value as int)
             }
         }
+        else if (type == "pushnotification")
+        {
+        	sendPush(value)
+        }
     }
 }
 
+// not used
 private show(devices, type) {
 	def device = devices.find { it.id == params.id }
 	if (!device) {
